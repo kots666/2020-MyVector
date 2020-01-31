@@ -2,38 +2,38 @@
 
 template<typename T>
 void MyVector<T>::CheckCapacity() {
-	if (size >= capacity) {
-		if (capacity < 2) ++capacity;
-		else capacity += (capacity / 2);
+	if (vecSize >= vecCapacity) {
+		if (vecCapacity < 2) ++vecCapacity;
+		else vecCapacity += (vecCapacity / 2);
 		IncreaseCapacity();
 	}
 }
 
 template<typename T>
 void MyVector<T>::IncreaseCapacity() {
-	T* newData = new T[capacity];
+	T* newData = new T[vecCapacity];
 	//T* newData = static_cast<T*>(malloc(sizeof(T)*capacity));
 
-	for (size_t i = 0; i < size; ++i) {
-		newData[i] = std::move(data[i]);
+	for (size_t i = 0; i < vecSize; ++i) {
+		newData[i] = std::move(vecData[i]);
 	}
 
-	if (data != nullptr) delete[] data;
+	if (vecData != nullptr) delete[] vecData;
 
-	data = newData;
+	vecData = newData;
 }
 
 template<typename T>
-MyVector<T>::MyVector(size_t s) : size(s), capacity(s)
+MyVector<T>::MyVector(size_t s) : vecSize(s), vecCapacity(s)
 {
-	if (s < 1) data = nullptr;
-	else data = new T[s];
+	if (s < 1) vecData = nullptr;
+	else vecData = new T[s];
 }
 
 template<typename T>
 MyVector<T>::~MyVector()
 {
-	Clear();
+	clear();
 }
 
 template<typename T>
@@ -45,6 +45,11 @@ MyVector<T>::Iterator::Iterator(const Iterator & iter) : pointer(iter.pointer) {
 template<typename T>
 T& MyVector<T>::Iterator::operator*() {
 	return *pointer;
+}
+
+template<typename T>
+int MyVector<T>::Iterator::operator-(const Iterator & iter) {
+	return pointer - iter.pointer;
 }
 
 template<typename T>
@@ -61,7 +66,7 @@ const MyVector<T>::template Iterator MyVector<T>::Iterator::operator++(int) {
 }
 
 template<typename T>
-MyVector<T>::template Iterator & MyVector<T>::Iterator::operator--() {
+MyVector<T>::template Iterator& MyVector<T>::Iterator::operator--() {
 	--pointer;
 	return *this;
 }
@@ -93,7 +98,12 @@ template<typename T>
 MyVector<T>::ReverseIterator::ReverseIterator(const ReverseIterator & iter) : pointer(iter.pointer) {}
 
 template<typename T>
-T& MyVector<T>::ReverseIterator::operator *() { return *pointer; };
+T& MyVector<T>::ReverseIterator::operator *() { return *pointer; }
+template<typename T>
+int MyVector<T>::ReverseIterator::operator-(const ReverseIterator & iter) {
+	return pointer - iter.pointer;
+}
+;
 
 template<typename T>
 MyVector<T>::template ReverseIterator& MyVector<T>::ReverseIterator::operator++()
@@ -111,7 +121,7 @@ const MyVector<T>::template ReverseIterator MyVector<T>::ReverseIterator::operat
 }
 
 template<typename T>
-MyVector<T>::template ReverseIterator & MyVector<T>::ReverseIterator::operator--() {
+MyVector<T>::template ReverseIterator& MyVector<T>::ReverseIterator::operator--() {
 	++pointer;
 	return *this;
 }
@@ -137,83 +147,95 @@ bool MyVector<T>::ReverseIterator::operator==(const ReverseIterator & iter)
 }
 
 template<typename T>
-MyVector<T>::template Iterator MyVector<T>::Begin()
+MyVector<T>::template Iterator MyVector<T>::begin()
 {
-	return Iterator(data);
+	return Iterator(vecData);
 }
 
 template<typename T>
-MyVector<T>::template Iterator MyVector<T>::End()
+MyVector<T>::template Iterator MyVector<T>::end()
 {
-	return Iterator(data + size);
+	return Iterator(vecData + vecSize);
 }
 
 template<typename T>
-MyVector<T>::template ReverseIterator MyVector<T>::RBegin()
+MyVector<T>::template ReverseIterator MyVector<T>::rbegin()
 {
-	return ReverseIterator(data + size - 1);
+	return ReverseIterator(vecData + vecSize - 1);
 }
 
 template<typename T>
-MyVector<T>::template ReverseIterator MyVector<T>::REnd()
+MyVector<T>::template ReverseIterator MyVector<T>::rend()
 {
-	return ReverseIterator(data - 1);
+	return ReverseIterator(vecData - 1);
 }
 
 template<typename T>
-void MyVector<T>::Clear()
+void MyVector<T>::clear()
 {
-	if (data != nullptr) {
-		delete[] data;
-		data = nullptr;
+	if (vecData != nullptr) {
+		delete[] vecData;
+		vecData = nullptr;
 	}
 }
 
 template<typename T>
-void MyVector<T>::Push_Back(const T & other)
+MyVector<T>::template Iterator MyVector<T>::erase(Iterator at)
 {
-	CheckCapacity();
-	data[size++] = other;
+	int gap = at - vecData;
+	--vecSize;
+	for (size_t i = gap; i < vecSize; ++i) {
+		vecData[i] = vecData[i + 1];
+	}
+
+	return Iterator(vecData + gap - 1);
 }
 
 template<typename T>
-void MyVector<T>::Push_Back(T && other)
+void MyVector<T>::push_back(const T & other)
 {
 	CheckCapacity();
-	data[size++] = std::move(other);
+	vecData[vecSize++] = other;
 }
 
 template<typename T>
-void MyVector<T>::Reserve(size_t n)
+void MyVector<T>::push_back(T && other)
 {
-	if (n > capacity) {
-		capacity = n;
+	CheckCapacity();
+	vecData[vecSize++] = std::move(other);
+}
+
+template<typename T>
+void MyVector<T>::reserve(size_t n)
+{
+	if (n > vecCapacity) {
+		vecCapacity = n;
 		IncreaseCapacity();
 	}
 }
 
 template<typename T>
-size_t MyVector<T>::Capacity() const
+size_t MyVector<T>::capacity() const
 {
-	return capacity;
+	return vecCapacity;
 }
 
 template<typename T>
-size_t MyVector<T>::Size() const
+size_t MyVector<T>::size() const
 {
-	return size;
+	return vecSize;
 }
 
 template<typename T>
 T & MyVector<T>::operator[](const size_t n) const
 {
 	if (n < 0) std::abort();
-	if (n >= size) std::abort();
+	if (n >= vecSize) std::abort();
 	/*try {
 		if (n >= size) throw std::out_of_range("Out of Range");
 	}
 	catch (typename std::out_of_range e) {
 		std::cerr << e.what() << std::endl;
 	}*/
-	return data[n];
+	return vecData[n];
 }

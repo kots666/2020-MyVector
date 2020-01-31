@@ -4,9 +4,9 @@
 template <typename T>
 class MyVector {
 private:
-	size_t capacity;
-	size_t size;
-	T* data;
+	size_t vecCapacity;
+	size_t vecSize;
+	T* vecData;
 
 	void CheckCapacity();
 	void IncreaseCapacity();
@@ -22,7 +22,7 @@ public:
 		Iterator(T* p = nullptr);
 		Iterator(const Iterator& iter);
 		T& operator *();
-		T& operator -(const Iterator& iter) { return pointer - iter.pointer; }
+		int operator -(const Iterator& iter);
 		Iterator& operator++();
 		const Iterator operator++(int);
 		Iterator& operator--();
@@ -38,7 +38,7 @@ public:
 		ReverseIterator(T* p = nullptr);
 		ReverseIterator(const ReverseIterator& iter);
 		T& operator *();
-		//T& operator -(const ReverseIterator& iter);
+		int operator -(const ReverseIterator& iter);
 		ReverseIterator& operator++();
 		const ReverseIterator operator++(int);
 		ReverseIterator& operator--();
@@ -48,22 +48,24 @@ public:
 	};
 
 
-	Iterator Begin();
-	Iterator End();
-	ReverseIterator RBegin();
-	ReverseIterator REnd();
+	Iterator begin();
+	Iterator end();
+	ReverseIterator rbegin();
+	ReverseIterator rend();
 
-	void Clear();
+	void clear();
 
-	void Push_Back(const T& other);
+	Iterator erase(Iterator at);
 
-	void Push_Back(T&& other);
+	void push_back(const T& other);
 
-	void Reserve(size_t n);
+	void push_back(T&& other);
 
-	size_t Capacity() const;
+	void reserve(size_t n);
 
-	size_t Size() const;
+	size_t capacity() const;
+
+	size_t size() const;
 
 	T& operator[] (const size_t n) const;
 };

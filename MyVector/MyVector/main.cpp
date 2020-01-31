@@ -12,17 +12,25 @@ using namespace std;
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	//MyVector<int> vec;
 	MyVector<int> vec;
 
-	for (int i = 0; i < 10; ++i) {
-		vec.Push_Back(i);
+	for (int i = 0; i < 30; ++i) {
+		vec.push_back(i);
 	}
 
-	for (auto p = vec.RBegin(); p != vec.REnd(); ++p) {
+	for (auto p = vec.begin(); p != vec.end(); ++p) {
+		if ((*p) % 3 == 0)
+			p = vec.erase(p);
+	}
+
+	for (auto p = vec.begin(); p != vec.end(); ++p) {
 		cout << *p << endl;
 	}
 
-	cout << vec.Size() << endl;
-	cout << vec.Capacity() << endl;
+	/*for (auto p = vec.rbegin(); p != vec.rend(); ++p) {
+		cout << *p << endl;
+	}*/
+
+	cout << "size : " << vec.size() << endl;
+	cout << "capacity : " << vec.capacity() << endl;
 }
