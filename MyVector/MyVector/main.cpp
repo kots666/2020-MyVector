@@ -18,18 +18,23 @@ int main() {
 		vec.push_back(i);
 	}
 
+	int a = 38;
+
+	auto p = vec.begin();
+
+	vec.insert(p, a);
+
+	vec.insert(vec.begin(), 10);
+
+
 	for (auto p = vec.begin(); p != vec.end(); ++p) {
 		if ((*p) % 3 == 0)
 			p = vec.erase(p);
 	}
 
-	for (auto p = vec.begin(); p != vec.end(); ++p) {
+	for (auto p = vec.rbegin(); p != vec.rend(); ++p) {
 		cout << *p << endl;
 	}
-
-	/*for (auto p = vec.rbegin(); p != vec.rend(); ++p) {
-		cout << *p << endl;
-	}*/
 
 	cout << "size : " << vec.size() << endl;
 	cout << "capacity : " << vec.capacity() << endl;

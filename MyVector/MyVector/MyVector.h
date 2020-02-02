@@ -21,14 +21,14 @@ public:
 	public:
 		Iterator(T* p = nullptr);
 		Iterator(const Iterator& iter);
-		T& operator *();
+		T& operator *() const;
 		int operator -(const Iterator& iter);
 		Iterator& operator++();
-		const Iterator operator++(int);
+		Iterator operator++(int);
 		Iterator& operator--();
-		const Iterator operator--(int);
-		bool operator !=(const Iterator& iter);
-		bool operator ==(const Iterator& iter);
+		Iterator operator--(int);
+		bool operator !=(const Iterator& iter) const;
+		bool operator ==(const Iterator& iter) const;
 	};
 
 	class ReverseIterator {
@@ -37,25 +37,29 @@ public:
 	public:
 		ReverseIterator(T* p = nullptr);
 		ReverseIterator(const ReverseIterator& iter);
-		T& operator *();
+		T& operator *() const;
 		int operator -(const ReverseIterator& iter);
 		ReverseIterator& operator++();
-		const ReverseIterator operator++(int);
+		ReverseIterator operator++(int);
 		ReverseIterator& operator--();
-		const ReverseIterator operator--(int);
-		bool operator !=(const ReverseIterator& iter);
-		bool operator ==(const ReverseIterator& iter);
+		ReverseIterator operator--(int);
+		bool operator !=(const ReverseIterator& iter) const;
+		bool operator ==(const ReverseIterator& iter) const;
 	};
 
 
-	Iterator begin();
-	Iterator end();
-	ReverseIterator rbegin();
-	ReverseIterator rend();
+	Iterator begin() noexcept;
+	Iterator end() noexcept;
+	ReverseIterator rbegin() noexcept;
+	ReverseIterator rend() noexcept;
 
 	void clear();
 
 	Iterator erase(Iterator at);
+
+	Iterator insert(Iterator at, const T& input);
+
+	Iterator insert(Iterator at, T&& input);
 
 	void push_back(const T& other);
 
