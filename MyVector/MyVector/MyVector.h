@@ -8,6 +8,9 @@ private:
 	size_t vecSize;
 	T* vecData;
 
+	//template<typename ...Args>
+	//void Construct();
+
 	void CheckCapacity();
 	void IncreaseCapacity();
 public:
@@ -54,6 +57,9 @@ public:
 	ReverseIterator rend() noexcept;
 
 	void clear();
+
+	template<typename ...Args>
+	void emplace_back(Args&& ...args);
 
 	Iterator erase(Iterator at);
 

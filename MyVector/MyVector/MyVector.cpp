@@ -1,3 +1,4 @@
+#include <cassert>
 #include "MyVector.h"
 
 template<typename T>
@@ -11,14 +12,14 @@ void MyVector<T>::CheckCapacity() {
 
 template<typename T>
 void MyVector<T>::IncreaseCapacity() {
-	T* newData = new T[vecCapacity];
-	//T* newData = static_cast<T*>(malloc(sizeof(T)*capacity));
+	T* newData = static_cast<T*>(operator new(sizeof(T) * vecCapacity));
 
 	for (size_t i = 0; i < vecSize; ++i) {
-		newData[i] = std::move(vecData[i]);
+		T* moveData = &newData[i];
+		new(moveData) T(std::forward<T>(vecData[i]));
 	}
 
-	if (vecData != nullptr) delete[] vecData;
+	clear();
 
 	vecData = newData;
 }
@@ -26,7 +27,7 @@ void MyVector<T>::IncreaseCapacity() {
 template<typename T>
 MyVector<T>::MyVector(size_t s) : vecSize(s), vecCapacity(s) {
 	if (s < 1) vecData = nullptr;
-	else vecData = new T[s];
+	else vecData = static_cast<T*>(operator new(sizeof(T) * s));
 }
 
 template<typename T>
@@ -162,9 +163,22 @@ MyVector<T>::template ReverseIterator MyVector<T>::rend() noexcept {
 template<typename T>
 void MyVector<T>::clear() {
 	if (vecData != nullptr) {
-		delete[] vecData;
+		for (size_t i = 0; i < vecSize; ++i) {
+			vecData[i].~T();
+		}
+		operator delete (vecData);
 		vecData = nullptr;
 	}
+}
+
+template<typename T>
+template<typename ...Args>
+void MyVector<T>::emplace_back(Args && ...args)
+{
+	CheckCapacity();
+	T* p = &vecData[vecSize];
+	new(p) T(std::forward<Args>(args)...);
+	++vecSize;
 }
 
 template<typename T>
@@ -212,13 +226,17 @@ MyVector<T>::template Iterator MyVector<T>::insert(Iterator at, T&& input) {
 template<typename T>
 void MyVector<T>::push_back(const T& other) {
 	CheckCapacity();
-	vecData[vecSize++] = other;
+	T* p = &vecData[vecSize];
+	new(p) T(other);
+	++vecSize;
 }
 
 template<typename T>
 void MyVector<T>::push_back(T&& other) {
 	CheckCapacity();
-	vecData[vecSize++] = std::move(other);
+	T* p = &vecData[vecSize];
+	new(p) T(std::move(other));
+	++vecSize;
 }
 
 template<typename T>
@@ -240,14 +258,7 @@ size_t MyVector<T>::size() const {
 }
 
 template<typename T>
-T & MyVector<T>::operator[](const size_t n) const {
-	if (n < 0) std::abort();
-	if (n >= vecSize) std::abort();
-	/*try {
-		if (n >= size) throw std::out_of_range("Out of Range");
-	}
-	catch (typename std::out_of_range e) {
-		std::cerr << e.what() << std::endl;
-	}*/
+T& MyVector<T>::operator[](const size_t n) const {
+	assert(0 <= n && n < vecSize);
 	return vecData[n];
 }

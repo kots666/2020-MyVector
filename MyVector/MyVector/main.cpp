@@ -1,5 +1,6 @@
 #include <iostream>
 #include <crtdbg.h>
+#include <string>
 #include "MyVector.h"
 #include "MyVector.cpp"
 
@@ -12,30 +13,19 @@ using namespace std;
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	MyVector<int> vec;
+	MyVector<string> vec;
 
-	for (int i = 0; i < 30; ++i) {
-		vec.push_back(i);
-	}
+	string s1("Hee Jae");
+	string s2("Kang");
 
-	int a = 38;
-
-	auto p = vec.begin();
-
-	vec.insert(p, a);
-
-	vec.insert(vec.begin(), 10);
-
+	vec.emplace_back("Hi");
+	vec.emplace_back("My name is");
+	vec.push_back(s1);
+	vec.push_back(s2);
 
 	for (auto p = vec.begin(); p != vec.end(); ++p) {
-		if ((*p) % 3 == 0)
-			p = vec.erase(p);
-	}
-
-	for (auto p = vec.rbegin(); p != vec.rend(); ++p) {
 		cout << *p << endl;
 	}
-
 	cout << "size : " << vec.size() << endl;
 	cout << "capacity : " << vec.capacity() << endl;
 }
