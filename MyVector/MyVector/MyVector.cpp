@@ -25,9 +25,9 @@ void MyVector<T>::IncreaseCapacity() {
 }
 
 template<typename T>
-MyVector<T>::MyVector(size_t s) : vecSize(s), vecCapacity(s) {
-	if (s < 1) vecData = nullptr;
-	else vecData = static_cast<T*>(operator new(sizeof(T) * s));
+MyVector<T>::MyVector(size_t newSize) : vecSize(newSize), vecCapacity(newSize) {
+	if (newSize < 1) vecData = nullptr;
+	else vecData = static_cast<T*>(operator new(sizeof(T) * newSize));
 }
 
 template<typename T>
@@ -240,9 +240,9 @@ void MyVector<T>::push_back(T&& other) {
 }
 
 template<typename T>
-void MyVector<T>::reserve(size_t n) {
-	if (n > vecCapacity) {
-		vecCapacity = n;
+void MyVector<T>::reserve(size_t newSize) {
+	if (newSize > vecCapacity) {
+		vecCapacity = newSize;
 		IncreaseCapacity();
 	}
 }
@@ -258,7 +258,7 @@ size_t MyVector<T>::size() const {
 }
 
 template<typename T>
-T& MyVector<T>::operator[](const size_t n) const {
-	assert(0 <= n && n < vecSize);
-	return vecData[n];
+T& MyVector<T>::operator[](const size_t index) const {
+	assert(0 <= index && index < vecSize);
+	return vecData[index];
 }
