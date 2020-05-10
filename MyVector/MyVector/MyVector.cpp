@@ -88,7 +88,7 @@ bool MyVector<T>::Iterator::operator==(const Iterator& iter) const {
 }
 
 template<typename T>
-MyVector<T>::ReverseIterator::ReverseIterator(T * p) : pointer(p) {}
+MyVector<T>::ReverseIterator::ReverseIterator(T* p) : pointer(p) {}
 
 template<typename T>
 MyVector<T>::ReverseIterator::ReverseIterator(const ReverseIterator& iter) : pointer(iter.pointer) {}
@@ -176,8 +176,8 @@ template<typename ...Args>
 void MyVector<T>::emplace_back(Args && ...args)
 {
 	CheckCapacity();
-	T* p = &vecData[vecSize];
-	new(p) T(std::forward<Args>(args)...);
+	T* newData = &vecData[vecSize];
+	new(newData) T(std::forward<Args>(args)...);
 	++vecSize;
 }
 
@@ -226,16 +226,16 @@ MyVector<T>::template Iterator MyVector<T>::insert(Iterator at, T&& input) {
 template<typename T>
 void MyVector<T>::push_back(const T& other) {
 	CheckCapacity();
-	T* p = &vecData[vecSize];
-	new(p) T(other);
+	T* newData = &vecData[vecSize];
+	new(newData) T(other);
 	++vecSize;
 }
 
 template<typename T>
 void MyVector<T>::push_back(T&& other) {
 	CheckCapacity();
-	T* p = &vecData[vecSize];
-	new(p) T(std::move(other));
+	T* newData = &vecData[vecSize];
+	new(newData) T(std::move(other));
 	++vecSize;
 }
 
