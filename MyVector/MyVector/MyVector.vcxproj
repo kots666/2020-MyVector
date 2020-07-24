@@ -140,7 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MyVector.h" />
-    <ClInclude Include="MyVector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

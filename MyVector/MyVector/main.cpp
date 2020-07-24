@@ -2,7 +2,6 @@
 #include <crtdbg.h>
 #include <string>
 #include "MyVector.h"
-#include "MyVector.cpp"
 
 #ifdef _DEBUG
 #define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
